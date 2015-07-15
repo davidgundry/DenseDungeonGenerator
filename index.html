@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Dungeon Generator</title>
+    <script type="text/javascript" src="dungeonGen.js"></script>
+    <script type="text/javascript" src="core/random.js"></script>
+    <script type="text/javascript" src="core/direction.js"></script>
+  </head>
+
+  <body style="font-family:monospace; font-size:11pt; background-color:white; color: black;">
+  
+    <h1>Dungeon Generator</h2>
+    
+    <p>Map Width: <input id="mW" type="number" value="25" min="1"/> (default 25)<br />
+    Map Height: <input id="mH" type="number" value="25" min="1"/> (default 25)<br />
+    Target number of ways down: <input id="targetWaysDown" type="number" value="2" min="1"/> (default 2)<br />
+    Box Size (min): <input id="boxMin" type="number" value="4" min="1"/> (default 4)<br />
+    Box Size (max): <input id="boxMax" type="number" value="10" min="1"/> (default 10)<br />
+    Target Rooms: <input id="targetRooms" type="number" value="10" min="1"/>  (default 10)<br />
+    Target Extra Door to Room Ratio Numerator: <input id="targetDoorRatioN" type="number" value="1" min="0"/>  (default 1)<br />
+    Target Extra Door to Room Ratio Denominator: <input id="targetDoorRatioD" type="number" value="4" min="1"/>  (default 4)<br />
+    Max Number of Floors: <input id="maxFloors" type="number" value="1" min="1"/>  (default 1)<br />
+    Output in new window/tab: <input type="checkbox" id="outputCB" name="output" value="true"><br />
+    <input type="submit" onClick="regenerate()" value="Generate"/></p>
+
+    <div id="dgenbottom" style="background-color: white; color: black; font-family: mono; font-size:15pt; line-height:60%; text-align:center;">
+    </div>
+  </body>
+</html>
+
+
+<script type="text/javascript">
+function regenerate()
+{
+    var levelTag = true;
+    var width = parseInt(document.getElementById("mW").value);
+    var height = parseInt(document.getElementById("mH").value);
+    var origins = [{x:Core.RNR(3,width-4),y:Core.RNR(3,height-4),direction:Core.direction.random(),type:DungeonGen.origin.WAYUP}];
+    var targetWaysDown = document.getElementById("targetWaysDown").value;
+    var defaultMinSize = document.getElementById("boxMin").value;
+    var defaultMaxSize = document.getElementById("boxMax").value;
+    var targetRooms = document.getElementById("targetRooms").value;
+    var targetDoorRatio = (document.getElementById("targetDoorRatioN").value/document.getElementById("targetDoorRatioD").value);
+    var maxFloors = document.getElementById("maxFloors").value;
+  
+    var html="";
+    for (var n=0;n<maxFloors;n++)
+    {
+      var generator = new DungeonGen(width,height,origins,targetWaysDown,defaultMinSize,defaultMaxSize);
+      if (n<maxFloors-1)
+	var dungeon = generator.generate(targetRooms,targetDoorRatio,true); 
+      else
+	var dungeon = generator.generate(targetRooms,targetDoorRatio,false); 
+      
+      if (levelTag)
+	html+="<span style='font-size:10pt;'>Level "+n + "</span><br />";
+      html+=DungeonGen.textConvert(dungeon);
+      
+      origins = generator.getWaysDown();
+    }
+    if (document.getElementById("outputCB").checked)
+    {	
+      var content = '<html><body><div id="dgenbottom" style="background-color: white; color: black; font-family: mono; font-size:15pt; line-height:60%;">'+html+'</div></body></html>';
+      newWindow = window.open("data:text/html," + encodeURIComponent(content), "_blank", "");
+      newWindow.focus();
+    }
+    else
+      document.getElementById("dgenbottom").innerHTML = html+"";
+    
+}
+
+</script>
