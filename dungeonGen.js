@@ -770,7 +770,7 @@ DungeonGen.tile = {
 	    return "&#9724;";
 	    break;
 	  case DungeonGen.tile.FLOOR:
-	    return "&nbsp;";
+	    return "&#9723";
 	    break;
 	  case DungeonGen.tile.UNUSED:
 	    return "&#9640;";

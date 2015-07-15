@@ -24,8 +24,16 @@
     Output in new window/tab: <input type="checkbox" id="outputCB" name="output" value="true"><br />
     <input type="submit" onClick="regenerate()" value="Generate"/></p>
 
-    <div id="dgenbottom" style="background-color: white; color: black; font-family: mono; font-size:15pt; line-height:60%; text-align:center;">
-    </div>
+    <style>
+      dgenbottom:after {
+    content: "&#9723";
+    visibility: hidden;
+}</style>
+
+    <code id="dgenbottom" style="background-color: white; color: black; font-family: 'Courier New' monospace; font-size:15pt; line-height:60%; text-align:center;">
+    </code>
+   
+    
   </body>
 </html>
 
